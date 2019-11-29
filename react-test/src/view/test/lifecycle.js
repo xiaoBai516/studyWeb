@@ -15,64 +15,114 @@ import '../../style/base.scss'
 import '../../style/style.scss'
 import '../../style/App.scss'
 import 'antd/dist/antd.css';
+import Qs from 'underscore'
 
-// 定义组件 class语法新建组件，render里直接使用 return 里面写jsx语法
 class App extends React.Component {
-	render() {
-		const boss = '李云龙';
-		return (
-			<div>
-				<h2>独立团,团长{boss}</h2>
-                    <Onebattalion  nameBoss='张大喵'/>
-			</div>
-		);
-	}
-}
-
-
-//记得是首字母需要大写
-class Onebattalion extends React.Component {
-    //设置出事状态，执行 super(props)
+    //设置出事状态，执行 super(props)  constructor 是es6的函数
      constructor(props) {
           super(props);
           //设置新的数组
           this.state = {
-               solders:[
-                  {"id":"1","name":"小吴"},
-                  {"id":"2","name":"小时"},
-                  {"id":"3","name":"翔子"}
-               ]
+               name:"",
+               solders:[]
           }
           console.log('组件初始化')
-          // this.addSolders = this.addSolders.bind(this);
+     }
+     inpChane(e){
+          const value = e.target.value;
+          this.setState( () => ({
+                name:value
+          }))
+     }
+     //增加
+     addSolders(){
+          this.setState( (prevState, props) => ({
+               solders:[...prevState.solders,{"id":Math.random(),"name":prevState.name}],
+               name:''
+          }))
+     }
+     //删除
+     deleteData(item){
+          this.setState( (prevState, props) =>{
+               let list = [...prevState.solders];
+               let  result = Qs.filter(list,function(res) {
+                    return res.id !== item.id;
+               });
+               return { solders:result}
+          }) 
      }
      //生命周期函数 render 之前调用 ：在这个方法里面调用 setState 改变状态
      componentWillMount() {
-          console.log('组件马上就要加载了。。')
+          console.log('componentWillMount：组件马上就要加载了。。')
      }
-     componentWillUpdate() {
-          console.log('组件马上就要更新了。。')
-     }
-      //生命周期函数 render之后调用：这里可以获取组件的DOM节点
+     //生命周期函数 render之后调用：这里可以获取组件的DOM节点
      componentDidMount() {
-    		console.log('组件加载完毕！')
-    	}
+     	console.log('componentDidMount：组件加载完毕！')
+     }
+     //组件更新之前，会被执行 
+     shouldComponentUpdate(){
+          console.log('shouldComponentUpdate:组件更新之前，会被执行')
+          //这个是组件要不要被更新，如果返回true则是更新，如果是false则不更新组件
+          return true
+     }
+     //组件更新
+     componentWillUpdate() {
+          console.log('componentWillUpdate：组件马上就要更新了。。')
+     }
+     //组件更新完后
+     componentDidUpdate() {
+          console.log('componentDidUpdate：组件更新完')
+     }
+        
      render(){
+          console.log('render：组件渲染')
          return (
               <div>
-                   <h2>一营营长,名字叫:{this.props.nameBoss}.</h2>
-                   <div>一营里有成员:</div>
-                   <ul>
-                        {
-                             this.state.solders.length == 0?'无':
-                             this.state.solders.map( data => {
-                                 return <li  key={data.id}>{data.name}</li>
-                             })
-                        }
-                   </ul>
+                  <div><label htmlFor="innerHtml">请输入新成员的名字:</label> 
+                   <input id="innerHtml" type="text" value={this.state.name}  onChange={this.inpChane.bind(this)} /> 
+                  </div>
+                  <Button type="primary" onClick={this.addSolders.bind(this)}>新成员加入</Button>
+                  <div>一营里有成员:</div>
+                  <ul >
+                       {
+                            this.state.solders.map( (data,index) => {
+                                   return <Childdiv key={data.id} item={data} deleteItem = {this.deleteData.bind(this)}/>
+                            })
+                       }
+                  </ul>
               </div>
          )
     }
 }
 
+//记得是首字母需要大写
+class Childdiv extends React.Component {
+     constructor(props) {
+          super(props);
+          this.state = {};
+     }
+     shouldComponentUpdate(nextProps, nextState){
+          return nextProps.item === this.props.item?false:true
+     }
+     //这个组件是判断props 是否变化了，若变化了，this.setState将引起state变化，从而引起render
+     componentWillReceiveProps(){
+          console.log('child:componentWillReceiveProps：props更新')
+     }
+     //删除
+     handClick(item){
+          this.props.deleteItem(item);
+     }
+     //当这个组件即将从这个页面剔除的时候，会被执行
+     componentWillUnmount(){
+          console.log('child:componentWillUnmount:组件卸载')
+     }
+     render(){
+          console.log('子组件渲染')
+           const { item } = this.props;
+          return (
+          
+              <li  onClick={this.handClick.bind(this,item)} dangerouslySetInnerHTML={{ __html:item.name}}></li>
+          )
+     }
+}
 export default App;

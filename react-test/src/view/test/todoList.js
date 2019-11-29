@@ -104,6 +104,7 @@ class Onebattalion extends React.Component {
           }) 
      }
      render(){
+          console.log("父组件 render运行")
          return (
               <div>
                    <h2>一营营长,名字叫:{this.props.nameBoss}.</h2>

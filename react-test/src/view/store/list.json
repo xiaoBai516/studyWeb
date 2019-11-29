@@ -1,0 +1,40 @@
+{
+	"total": 4,
+	"count": 4,
+	"code": 200,
+	"msg": "查询成功",
+	"data": [{
+		"eventcontent": null,
+		"starttime": "01:01",
+		"status": "0",
+		"eventid": "009B4D9AB6AA4864A8D3666E2F3CF075",
+		"timerid": "8581D400343A482C8E019C0938E92802",
+		"deptid": "-1",
+		"deptname": "全院"
+	}, {
+		"eventcontent": null,
+		"starttime": "02:02",
+		"status": "0",
+		"eventid": "534D4E5832E845988CF239BDEC332FA9",
+		"timerid": "E6E7A057F3864264B66176548414083C",
+		"deptid": "16",
+		"deptname": "内二科病区"
+	}, {
+		"eventcontent": null,
+		"starttime": "08:30",
+		"status": "0",
+		"eventid": "BDAAFA5DFFC1433DB3FBFE827D078631",
+		"timerid": "AC71C56201B74EF8BFFDA944F562CE5B",
+		"deptid": "19",
+		"deptname": "8病区(妇科一)"
+	}, {
+		"eventcontent": null,
+		"starttime": "00:00",
+		"status": "0",
+		"eventid": "F5F1EEE939FC46E3BC613DEE9118448C",
+		"timerid": "F5A10147039347AFBE6A0E4620A91E82",
+		"deptid": "21",
+		"deptname": "骨科病区"
+	}],
+	"success": true
+}

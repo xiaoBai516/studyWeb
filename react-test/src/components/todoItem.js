@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import '../style/base.scss'
 import '../style/style.scss'
 import '../style/App.scss'
@@ -8,6 +9,7 @@ import 'antd/dist/antd.css';
 class TodoItem extends React.Component {
      constructor(props) {
           super(props);
+          this.state = {};
      }
      //删除
      handClick(item){
@@ -23,7 +25,7 @@ class TodoItem extends React.Component {
           )
      }
 	render() {
-          
+          console.log("子组件 render运行")
 		return (
 			<div>
                     <ul>
@@ -34,6 +36,16 @@ class TodoItem extends React.Component {
 		);
 	}
 }
+/*
+对TodoItem组件的属性类型做校验，
+solders 是数组类型
+deleteItem 是函数类型
 
+isRequired 是必须传这个值
+*/
+TodoItem.propTypes = {
+     solders:PropTypes.array.isRequired,
+     deleteItem:PropTypes.func
+}
 
 export default TodoItem;
