@@ -1,9 +1,10 @@
 在入口文件： index.js
-import React from 'react';
-import ReactDOM from 'react-dom';
-// 学习redux基础语法store={store}
-import App from './view/store/todoList';
-ReactDOM.render(<App/>, document.getElementById('root'))
+
+     import React from 'react';
+     import ReactDOM from 'react-dom';
+     // 学习redux基础语法store={store}
+     import App from './view/store/todoList';
+     ReactDOM.render(<App/>, document.getElementById('root'))
 
 
 
@@ -190,8 +191,11 @@ redux是本地数据库使用，react-redux帮助你完成数据订阅，redux-t
 * 方法：
 
      createStore :创建store   const store = createStore()
+     
      store.dispatch: 把组件 需要的数据传给 reducers
+     
      store.getState： 获取store的数据
+     
      store.subscribe：监听 store的数据的变化
      
 ## redux 中发送异步请求获取数据
@@ -229,55 +233,192 @@ redux是本地数据库使用，react-redux帮助你完成数据订阅，redux-t
                     }
                }
 ## 使用Redux-thunk中间件实现ajax数据请求
-     安装redux-thunk:
+     
+     * 什么是redux中间件
+          中间件是action和store的中间。中间件一定是redux的中间件
+          中间件是对store.dispatch方法的封装，升级。原始dispatch只能接受对象，因为有了中间件，dispatch还可以接受到函数。如果组件传递是对象，则直接把对象传给store，如果是函数，则会先执行函数，把输出的值传给store
+        
+     
+     * 其他的中间
+     
+      redux-saga 
+      
+     * 安装
+          安装redux-thunk:
           cnpm install --save redux-thunk
-     import { createStore, applyMiddleware } from 'redux';
-     import thunk from 'redux-thunk';
-     import reducer from './reducer'
-     
-     
-     
-     const store = createStore(
-          reducer,
-          applyMiddleware(thunk)
-     );
-     注意：如果你还想使用  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()的话，那就得在安装 redux-devtools-extension redux调试工具
           
-          import { createStore, applyMiddleware,compose } from 'redux';
+     * 使用
+          1. index.js  store使用
+          import { createStore, applyMiddleware } from 'redux';
           import thunk from 'redux-thunk';
           import reducer from './reducer'
           
-          const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;//浏览器的应用
-          
-          const enHancer = composeEnhancers(applyMiddleware(thunk));
-          const store = createStore(reducer,enHancer);
-          export default store
           
           
+          const store = createStore(
+               reducer,
+               applyMiddleware(thunk)
+          );
+          
+          注意：如果你还想使用  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()的话，那就得在安装 redux-devtools-extension redux调试工具
+               
+               import { createStore, applyMiddleware,compose } from 'redux';
+               import thunk from 'redux-thunk';
+               import reducer from './reducer'
+               
+               const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;//浏览器的应用
+               
+               const enHancer = composeEnhancers(applyMiddleware(thunk));
+               const store = createStore(reducer,enHancer);
+               export default store
+               
+               
 
 
-redux-thunk 安装好，创建store 使用这个中间件，同时通过enHancer的使用，结合了redux-thunk + redux-devtools-extension 的调试工具的结合使用。
+          redux-thunk 安装好，创建store 使用这个中间件，同时通过enHancer的使用，结合了redux-thunk + redux-devtools-extension 的调试工具的结合使用。
 
-1.异步的操作代码
+          2.异步的操作代码
 
-组件挂载完后，使用了redux-thunk 后，action 就可以是对象或是函数（没有redux-thunk,action只能是对象）
-实际上store只能接受对象，store发现接受的是函数，就会自动找到这个函数，去执行它
-componentDidMount(){
-     const action = getTodoList();
-     store.dispatch(action);
-}
+          组件挂载完后，使用了redux-thunk 后，action 就可以是对象或是函数（没有redux-thunk,action只能是对象）
+          实际上store只能接受对象，store发现接受的是函数，就会自动找到这个函数，去执行它，这个函数 是在请求，获取json数据，数据改了，同时要改变store里面的数据；要改变store的数据，就要走redux的流程，
+          先去创建action，然后我们调用store.dispatch的方法，我们返回这个函数就会自动返回dispatch的方法
+          componentDidMount(){
+               const action = getTodoList();
+               store.dispatch(action);
+          }
 
- actionCreators.js: 里面找到这个函数getTodoList ，获取数据，又要传递store
- 
-     export const getTodoList = () =>{
-          return (dispatch) =>{
-                axios.get('./list.json').then((res)=>{
-                     const todoList = res.data.todoList;
-                     const action = initTodoList(todoList);
-                     dispatch(action);
-                })
+           actionCreators.js: 里面找到这个函数getTodoList ，获取数据，又要传递store
+           
+               export const getTodoList = () =>{
+                    return (dispatch) =>{
+                          axios.get('./list.json').then((res)=>{
+                               const todoList = res.data.todoList;
+                               const action = initTodoList(todoList);
+                               dispatch(action);
+                          })
+                    }
+               }
+
+
+## redux-saga
+
+     * 安装
+          npm install --save redux-saga
+     *使用
+          
+          1.根据官方文档把saga的使用配置做好 index.js store
+          
+           import { createStore, applyMiddleware,compose } from 'redux';
+           import createSagaMiddleware from 'redux-saga'
+           import reducer from './reducer'
+           import mySaga from './sagas'
+           
+           //创建saga的中间件
+           const sagaMiddleware = createSagaMiddleware()
+           const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;//浏览器的应用
+           
+           const enHancer = composeEnhancers(applyMiddleware(sagaMiddleware));
+           const store = createStore(reducer,enHancer);
+           export default store
+          
+          2.组件 派发action 给reducers
+               actionCreators.js
+               export const getTodoList = () => ({
+                   type:GET_TODO_LIST
+               })
+               componentDidMount(){
+                    //3. redux-saga
+                   const action = getTodoList();
+                   store.dispatch(action);
+     
+               }
+          3.组件的派发action，除了reducers会收到，sage文件也是会受到的，
+          saga的文件，这个文件一定要导出generator的函数，在这个函数里面写逻辑：当我接受到action类型，我会执行相对应的方法
+          这个方法generator函数 去取数据，去完数据，在创建action，派发给store，store给了reducers
+          takeEvery的，在这里
+          
+               import axios from 'axios'
+               import { put, takeEvery} from 'redux-saga/effects'
+               import {GET_TODO_LIST} from './actionType'
+               import {initTodoList} from './actionCreators'
+               
+               
+               function* getTodoList(){
+                    try{
+                         const res =yield axios.get('./list.json');
+                         const action = initTodoList(res.data.todoList);
+                         yield put(action)   
+                    }catch(e){
+                         console.log('list.json网络请求失败')
+                    }
+                    
+               }
+               function* mySaga() {
+                    yield takeEvery(GET_TODO_LIST,getTodoList)
+               }
+               
+               export default mySaga;
+          
+redux-saga比redux-thunk 复杂多。redux-saga 适用于大项目
+
+## react-redux 这是第三方插件 :reactRedux.js
+     
+     
+     这是为了更方便使用redux。
+     
+     * 安装：npm install react-redux --save
+     
+     * 使用
+       
+     1.创建store index.js
+     
+     2.入口文件
+          import React from 'react';
+          import ReactDOM from 'react-dom';
+          import * as serviceWorker from './serviceWorker';
+          import { Provider } from 'react-redux';
+          import store from './store'
+          //Provider 提供器，提供store ，这时Provider里面放着的组件，因此Provider里面的组件都可以获取store的值
+          
+          import App from './view/store/reactRedux';
+          
+          const AppView = (
+              <Provider store={store}>
+                  <App />
+              </Provider>
+          )
+          
+          ReactDOM.render(AppView, document.getElementById('root'))
+          
+     3.组件
+     import { connect } from 'react-redux';
+     connect使组件获取store。
+     原理是：connect是链接，谁和谁做链接，是组件和store做链接；怎么做链接，有个映射关系，就是mapStateToPrps里面。mapStateToPrps里面的state 映射到组件的变量里
+    
+     3.1 获取store的数据
+     const mapStateToPrps = (state) =>{
+         return {
+              inputValue:state.inputValue,
+              list:state.list
+         }
+     }
+     访问的时候则是 this.props.inputValue
+     3.2 修改store数据
+     const mapDispatchToPrps = (dispatch) =>{
+          return {
+               changeIpt(e){
+                    const action = getChangeInputValue(e.target.value);
+                    dispatch(action);
+               },
+               submitBtn(){
+                    const action = addTodoList();
+                    dispatch(action);
+               
           }
      }
-
-
-## ss 
+      <Button type="primary" onClick={this.props.submitBtn}>提交</Button>
+       
+    export default connect(mapStateToPrps,mapDispatchToPrps)(App);
+    
+     
+     

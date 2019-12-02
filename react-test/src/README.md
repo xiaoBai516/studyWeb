@@ -574,12 +574,12 @@ setState 是一个异步函数，不能立即就直接，而是要等一会就�
     
 ## react开发调试工具
 
-# React developer tools
+React developer tools
 
 
 ## 补充内容
 
-## props，state与render函数的关系：todoList.js todeItem.js
+#props，state与render函数的关系：todoList.js todeItem.js
 
 简单的理解就是：数据和页面之间互相联动，它的底层运行记录是啥样
 
@@ -755,13 +755,13 @@ React的ref有3种用法：
  UI组件、容器组件、无状态组件、普通组件
  
  容器组件：<TodoListUi inputValue={this.state.inputValue} changeIpt={this.changeIpt} submitBtn={this.submitBtn} list={this.state.list} delItem ={this.delItem}/>
-		);
+ 
  UI组件：就是样式的组件
  
  无状态组件：当组件只有render 函数就是无状态组件，就可以写成下面的这种形式
+ 
  const TodoListUi = (props)=>{
      return (
       //render函数的内容
      )
  }
-## 试试

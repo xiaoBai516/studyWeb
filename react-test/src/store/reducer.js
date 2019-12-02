@@ -11,12 +11,12 @@
  
 */
 
-import { CHANGE_INPUT_VALUE,ADD_TODO_LIST,DEL_TODO_LIST,INIT_TODO_LIST } from './actionType'
+import { CHANGE_INPUT_VALUE,ADD_TODO_LIST,DEL_TODO_LIST,INIT_TODO_LIST ,GET_TODO_LIST} from './actionType'
 
 //图书管理系统的数据
 const defaultStore = {
-    inputValue:'',//input 输入的值
-    list:[]//列表数组的数据
+    inputValue:'111',//input 输入的值
+    list:['水果']//列表数组的数据
 }
 
 
