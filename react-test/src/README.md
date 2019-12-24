@@ -765,3 +765,73 @@ React的ref有3种用法：
       //render函数的内容
      )
  }
+
+
+##  路由 [](https://www.cnblogs.com/jsjx-xtfh/p/9972369.html)
+
+     1.安装react-router-dom：cnpm install react-router-dom --save  react-router-dom 是最新的第三方路由
+     
+     2.使用，在app.js
+     
+     import { BrowserRouter, Route } from 'react-router-dom';
+     import Home from './pages/home';
+     import Login from './pages/login';
+     
+          class App extends Component {
+               render() {
+                         return (
+                         <Provider store={store}>
+                              <BrowserRouter>
+                              <div>
+                                   <Header />
+                                        <Route path='/' exact component={Home}></Route>
+                                        <Route path='/login' exact component={Login}></Route>
+                              </div>
+                              </BrowserRouter>
+                         </Provider>
+                    );
+               }
+          }
+     * 路由传参
+          路由跳转 必须匹配好，否则不进行跳转。
+          如： <Route path='/detail/:id' exact component={Detail}></Route>//path='/detail/:id' 访问detail页面并且传参（id）   http://localhost:3000/detail/2   
+          
+          /detail/:id ==> :id 就是2.... 这样就匹配上了
+          如果写的是 <Route path='/detail' exact component={Detail}></Route>  则不能访问http://localhost:3000/detail/2  Detail 页面组件
+
+
+          ①动态路由获取参数
+          A.显示组件
+          <Route path='/detail/:id' exact component={Detail}></Route>  路由页面
+
+          B.列表页跳转路由
+          列表组件：
+          <Link key={index} to={'/detail/' + item.id}>
+               <ListItem >
+                    20年后《还珠格格》晴儿和老佛爷重聚，抱着对方哭成泪人
+               </ListItem>
+          </Link>
+
+          C.获取路由传递的数据
+          详细页组件：
+          this.props.match.params.id  //获取路由传递过来的数据
+
+          ②
+           A.显示组件
+          <Route path='/detail' exact component={Detail}></Route>  路由页面
+
+          B.列表页跳转路由
+          列表组件：
+          <Link key={index} to={'/detail?id=' + item.id}>
+               <ListItem >
+                    20年后《还珠格格》晴儿和老佛爷重聚，抱着对方哭成泪人
+               </ListItem>
+          </Link>
+
+          C.获取路由传递的数据
+          详细页组件：
+          this.props.location.search.split("=")[1] //获取路由传递过来的数据
+
+
+
+##  试试

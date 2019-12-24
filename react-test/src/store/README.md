@@ -420,5 +420,57 @@ redux-saga比redux-thunk 复杂多。redux-saga 适用于大项目
        
     export default connect(mapStateToPrps,mapDispatchToPrps)(App);
     
+    
+## 使用Immutable.js来管理store中的数据：Immutable.js
+
+     因为 store的数据是不能直接修改的，必须复制一份来，在进行操作。Immutable 刚好就是针对这个的操作。
+     Immutable 是第三方的模块，Facebook的团队开发的第三方库。Immutable Data 就是一旦创建，就不能再被更改的数据。对 Immutable 对象的任何修改或添加删除操作都会返回一个新的 Immutable 对象
+     state 创建成Immutable 对象，这样就变成不可改变了。
      
-     
+     1.安装：
+          npm install immutable
+          
+      2.使用
+          在reducers.js文件里，
+          
+          1.引用：import { fromJS } from 'immutable';
+          
+          2.创建Immutable 对象
+          const defaultStore = {
+              inputValue:'111',//input 输入的值
+              list:['水果']//列表数组的数据
+          }
+          修改成
+          const defaultState = fromJS({
+          	inputValue:'111',//input 输入的值
+          	list:['水果']//列表数组的数据
+          });
+          
+          3.修改组件的
+          const mapStateToPrps = (state) =>{
+               return {
+                    inputValue:state.inputValue,
+                    list:state.list
+               }
+          }
+          
+          修改成
+          const mapStateToPrps = (state) =>{
+               return {
+                    inputValue:state.get('inputValue'),
+                    list:state.get('list')
+               }
+          }
+          4.
+          immutable对象的set方法，会结合之前immutable对象的值和设置的值，返回一个全新的对象
+          export default (state = defaultStore, action) => {
+               switch (action.type) {
+                    case CHANGE_INPUT_VALUE:
+                         return state.set('inputValue',action.payload);
+                    default:
+                         return state
+               }
+          }
+          
+        
+          
